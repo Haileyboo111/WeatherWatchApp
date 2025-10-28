@@ -1,5 +1,5 @@
 function Home() {
-    return <h2>Home</h2>;
+    return <h1>Welcome to Weather Watch!</h1>;
 }
 
 export default Home;
