@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import "./Navbar.css";
 
 function Navbar() {
@@ -6,10 +7,26 @@ function Navbar() {
         <nav className="navbar">
             <h3 className="logo">Weather Watch</h3>
             <ul className="nav-links">
-                <li><a href="/" target="_blank" rel="noopener noreferrer">Home</a></li>
-                <li><a href="/forecast" target="_blank" rel="noopener noreferrer">Forecast</a></li>
-                <li><a href="/users" target="_blank" rel="noopener noreferrer">Users</a></li>
-                <li><a href="/about" target="_blank" rel="noopener noreferrer">About</a></li>
+                <li>
+                    <NavLink to="/" end className={({ isActive }) => (isActive ? "active" : undefined)}>
+                        Home
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/forecast" className={({ isActive }) => (isActive ? "active" : undefined)}>
+                        Forecast
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/users" className={({ isActive }) => (isActive ? "active" : undefined)}>
+                        Users
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/about" className={({ isActive }) => (isActive ? "active" : undefined)}>
+                        About
+                    </NavLink>
+                </li>
             </ul>
         </nav>
     );

@@ -35,3 +35,9 @@
 .nav-links a:hover {
     color: #61dafb;
 }
+
+/* Active route styling */
+.nav-links a.active {
+    color: #61dafb;
+    border-bottom: 2px solid #61dafb;
+}

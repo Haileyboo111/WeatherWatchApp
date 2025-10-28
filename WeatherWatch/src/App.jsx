@@ -1,10 +1,11 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Navbar from "./Navbar";
+import { Routes, Route } from 'react-router-dom';
+import './App.css';
+import Navbar from './Navbar';
+import Home from './Home';
+import Forecast from './Forecast';
+import Users from './Users';
+import About from './About';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -13,6 +14,14 @@ function App() {
 
     <>
       <Navbar />
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/forecast" element={<Forecast />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </main>
 
       <div>
         <a href="https://vite.dev" target="_blank">
