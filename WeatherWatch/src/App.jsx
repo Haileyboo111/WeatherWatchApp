@@ -8,8 +8,6 @@ import Users from './Users';
 import About from './About';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
 
     <>
@@ -45,7 +43,7 @@ function App() {
       </p>
 
     </>
-  )
+  );
 }
 
-export default App
+export default App;
