@@ -1,0 +1,45 @@
+.navbar {
+    width: 100vw;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #1e1e1e;
+    color: white;
+    padding: 4px 100px;
+    border-bottom: 2px solid #61dafb;
+    box-sizing: border-box;
+    position: fixed; 
+    top: 0;
+    left: 0; 
+    z-index: 1000;
+}
+
+.logo {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: bold;
+    line-height: 6;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #61dafb;
+}
+
+/* Active route styling */
+.nav-links a.active {
+    color: #61dafb;
+    border-bottom: 2px solid #61dafb;
+}
