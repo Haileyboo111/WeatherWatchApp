@@ -30,3 +30,8 @@
 .users-button {
     width: 100%;
 }
+
+.red-alert {
+    color: red;
+    font-weight: bold;
+}

@@ -1,13 +1,20 @@
 import React, { useState } from "react";
-import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import { Form, Button, Container, Alert } from "react-bootstrap";
 import "./Users.css";
 
 function Users() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError('');
+
+    if (!email || !password) {
+      setError('Please enter both email and password.');
+      return;
+    }
     console.log("Login attempted with:", { email, password });
   };
 
@@ -16,7 +23,10 @@ function Users() {
       <div className="users-wrapper">
         <div className="users-form-container">
           <h2 className="users-title">Login</h2>
-          <Form onSubmit={handleSubmit}>
+
+          {error && <Alert className="red-alert">{error}</Alert>}
+
+          <Form onSubmit={handleSubmit} className="users-form">
             <Form.Group className="users-form" controlId="formBasicEmail">
               <Form.Label>Email Address </Form.Label>
               <Form.Control
