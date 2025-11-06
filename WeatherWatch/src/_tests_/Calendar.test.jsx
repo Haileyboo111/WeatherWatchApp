@@ -6,7 +6,7 @@ import Calendar from '../Calendar.jsx';
 
 const monthRegex = /January|February|March|April|May|June|July|August|September|October|November|December/;
 
-test('shows the correct month/year for the given value', () => {
+test('shows the correct date for the given value', () => {
   render(<Calendar value={new Date(2024, 9, 15)} onChange={() => {}} />); // Oct 2024
   expect(screen.getByText(monthRegex)).toHaveTextContent('October 2024');
 });
