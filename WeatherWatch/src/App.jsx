@@ -4,9 +4,10 @@ import { Routes, Route } from 'react-router-dom';
 import './App.css';
 import Navbar from './Navbar';
 import Home from './Home';
-import Forecast from './Forecast';
+import TripPlanner from './TripPlanner';
 import Users from './Users';
 import About from './About';
+import Forecast from './Forecast';
 
 function App() {
   return (
@@ -15,7 +16,8 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/forecast" element={<Forecast />} />
+	  <Route path="/forecast" element={<Forecast />} />
+          <Route path="/trip-planner" element={<TripPlanner />} />
           <Route path="/users" element={<Users />} />
           <Route path="/about" element={<About />} />
         </Routes>
