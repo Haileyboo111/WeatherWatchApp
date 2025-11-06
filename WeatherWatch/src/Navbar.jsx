@@ -12,9 +12,14 @@ function Navbar() {
                         Home
                     </NavLink>
                 </li>
-                <li>
+	        <li>
                     <NavLink to="/forecast" className={({ isActive }) => (isActive ? "active" : undefined)}>
                         Forecast
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/trip-planner" className={({ isActive }) => (isActive ? "active" : undefined)}>
+                        Calendar
                     </NavLink>
                 </li>
                 <li>
