@@ -4,7 +4,7 @@ const axios = require("axios");
 (async () => {
   try {
     // Call your mock API endpoint
-    const response = await axios.get("http://localhost:3000/api/mockWeather");
+    const response = await axios.get("http://localhost:3000/src/mockData");
 
     console.log("Mock Test Successful");
     console.log("Returned Data:", response.data);
