@@ -1,0 +1,54 @@
+.toggle-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.toggle-buttons button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #3a3a3a;
+  background: #1a1a1a;
+  color: white;
+  cursor: pointer;
+}
+
+.toggle-buttons .active {
+  border-color: #61dafb;
+  background: rgba(97, 218, 251, 0.15);
+}
+
+.fetch-btn {
+  display: block;
+  margin: 12px auto;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background: #1a1a1a;
+  border: 1px solid #3a3a3a;
+  cursor: pointer;
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.day-card {
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  background: #1a1a1a;
+}
+
+.weather-card {
+  margin-top: 16px;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  padding: 12px;
+  background: #1a1a1a;
+}
+
