@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Calendar.css';
 
 // Small month-view calendar with simple navigation and selection
@@ -15,11 +15,28 @@ function Calendar({ value, onChange }) {
   // Month boundaries and metrics
   const firstOfMonth = new Date(viewYear, viewMonth, 1);
   const firstWeekday = firstOfMonth.getDay(); // 0 (Sun) - 6 (Sat)
-  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+  // Note: daysInMonth available if needed
+  // const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
 
   // Shallow date comparison (ignores time)
-  const isSameDay = (a, b) =>
-    a && b && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  const isSameDay = (a, b) => Boolean(
+    a &&
+    b &&
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+
+  // If the controlled `value` changes to a different month/year,
+  // keep the view in sync so selection remains visible.
+  useEffect(() => {
+    if (value instanceof Date) {
+      if (value.getFullYear() !== viewYear || value.getMonth() !== viewMonth) {
+        setViewDate(value);
+      }
+    }
+    // viewYear and viewMonth derived from viewDate
+  }, [value, viewYear, viewMonth]);
 
   // Move the view backward/forward by one month
   const goPrevMonth = () => setViewDate(new Date(viewYear, viewMonth - 1, 1));
