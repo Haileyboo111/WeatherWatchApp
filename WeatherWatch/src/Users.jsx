@@ -1,21 +1,28 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Alert } from "react-bootstrap";
 import "./Users.css";
+import { loginUser } from './api/login_api';
 
 function Users() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     if (!email || !password) {
-      setError('Please enter both email and password.');
+      setError('Enter both email and password.');
       return;
     }
-    console.log("Login attempted with:", { email, password });
+
+    try {
+      const data = await loginUser(email, password);
+      console.log("Login successful:", data);
+    } catch (err) {
+      setError(err);
+    }
   };
 
   return (
