@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { Form, Button, Container, Alert } from "react-bootstrap";
 import "./Users.css";
 import { loginUser } from './api/login_api';
+import { useAuth } from './context/AuthContext';
 
 function Users() {
+  const { login } = useAuth();
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState('');
@@ -19,6 +22,7 @@ function Users() {
 
     try {
       const data = await loginUser(email, password);
+      login(data);
       console.log("Login successful:", data);
     } catch (err) {
       setError(err);
