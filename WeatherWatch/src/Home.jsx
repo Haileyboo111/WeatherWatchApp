@@ -1,27 +1,27 @@
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import React, { useEffect } from 'react';
+import Button from 'react-bootstrap/Button';
+import './Home.css';
 
 function Home() {
-      return (
+  useEffect(() => {
+    document.body.classList.add('home-background');
+    return () => {
+      document.body.classList.remove('home-background');
+    };
+  }, []);
+  return (
     <>
-        <h1>Welcome to Weather Watch!</h1>;
+      <div className="home-text">Weather Watch </div>
+      <div className="home-slogan">
+        <p>Plan Smart. Travel Safe.</p>
+      </div>
 
-        <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <div className="card">
-        <p>
-          Plan Smart. Travel Safe.
-        </p>
-      </div>
     </>
   );
 }
 
+
+
 export default Home;
+
 
