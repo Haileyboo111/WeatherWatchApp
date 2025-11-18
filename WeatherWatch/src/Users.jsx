@@ -80,7 +80,7 @@ function Users() {
             )} 
 
             <Form.Group className="users-form" controlId="formBasicEmail">
-              <Form.Label>Email Address </Form.Label>
+              <Form.Label>Email </Form.Label>
               <Form.Control
                 type="email"
                 placeholder="Enter email"
