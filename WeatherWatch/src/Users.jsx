@@ -109,7 +109,7 @@ function Users() {
               <>
                 Don't have an account?{" "}
                 <span
-                  className="switch-link"
+                  className="switch-link users-form"
                   onClick={() => {
                     setMode("register");
                     setError("");
@@ -122,7 +122,7 @@ function Users() {
               <>
                 Already have an account?{" "}
                 <span
-                  className="switch-link"
+                  className="switch-link users-form"
                   onClick={() => {
                     setMode("login");
                     setError("");
