@@ -1,0 +1,86 @@
+.trip-card {
+  margin-top: 12px;
+  text-align: left;
+}
+
+.trip-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.trip-destination {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.trip-destination__label {
+  font-weight: 700;
+  color: var(--sky-deep);
+}
+
+.trip-input {
+  flex: 1;
+  min-width: 220px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(20,40,70,0.12);
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 6px 16px rgba(27,50,85,0.05);
+  font-size: 1rem;
+  color: var(--sky-deep);
+}
+
+.trip-input:focus {
+  outline: 3px solid rgba(74,144,226,0.18);
+  border-color: transparent;
+}
+
+.trip-action {
+  padding: 10px 14px; 
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--sky-primary), var(--sky-deep));
+  color: white;
+  border: none;
+  cursor: pointer; 
+  font-weight: 700;
+  box-shadow: 0 10px 26px rgba(74,144,226,0.14);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.trip-action:hover:enabled {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(74,144,226,0.18);
+}
+
+.trip-action:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.trip-destination__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(74,144,226,0.1);
+  color: var(--sky-deep);
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+@media (max-width: 540px) {
+  .trip-destination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .trip-card__header {
+    align-items: flex-start;
+  }
+}
