@@ -42,7 +42,7 @@ function Users() {
     setError('');
 
     if (!name || !email || !password) {
-      setError('Enter both email and password.');
+      setError('Enter name, email, and password.');
       return;
     }
 
