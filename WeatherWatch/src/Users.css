@@ -2,19 +2,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    min-height: 100px;
+    min-width: 30vw;
     padding: 20px;
-    background-color: rgb(53, 52, 52);
 }
 
 .users-form-container {
+    height: 300px;
     width: 100%;
     max-width: 400px;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    background-color: rgb(2, 2, 2);
-    color: rgb(252, 249, 249);
+    box-shadow: 0 0 10px var(--sky-deep);
+    color: var(--sky-deep);
 }
 
 .users-title {
@@ -25,10 +25,12 @@
 
 .users-form {
     margin-bottom: 15px;
+    font-weight: bold;
 }
 
 .users-button {
     width: 100%;
+    justify-content: center;
 }
 
 .red-alert {
