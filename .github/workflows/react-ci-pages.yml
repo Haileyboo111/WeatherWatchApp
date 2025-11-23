@@ -37,6 +37,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: WeatherWatch/dist
+          name: github-pages #tesing purposes
 
   deploy:
     needs: build
