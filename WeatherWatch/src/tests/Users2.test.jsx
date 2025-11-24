@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import Users from './Users';
-import { useAuth } from './context/AuthContext';
-import { loginUser } from './api/login_api';
+import Users from '../Users';
+import { useAuth } from '../context/AuthContext';
+import { loginUser } from '../api/login_api';
 import { MemoryRouter } from 'react-router-dom';
 
 // mock loginUser so i dont make real API calls
