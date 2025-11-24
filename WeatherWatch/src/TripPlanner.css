@@ -11,6 +11,27 @@
   flex-wrap: wrap;
 }
 
+.trip-planner-card{
+  background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  color: #00274d;
+}
+
+.trip-planner-card:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease-in-out;
+}
+
+.weather-card{
+  padding: 16px;
+  border-radius: 16px; 
+  background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(247,249,252,0.95));
+  box-shadow: 0 8px 24px rgba(27,50,85,0.08);
+  border: 1px solid rgba(20,40,70,0.04);
+  margin-top: 16px;
+
 .trip-destination {
   display: flex;
   align-items: flex-end;

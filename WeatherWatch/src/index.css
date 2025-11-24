@@ -12,7 +12,7 @@
           --warning: #D9534F;
           --snow-blue: #D9F2FF;
 
-	  --bg-gradient-top: liinear-gradient(180deg, var(--sky-light) 0%, var(--cloud-white) 100%);
+	  --bg-gradient-top: linear-gradient(180deg, var(--sky-light) 0%, var(--cloud-white) 100%);
 	  --card-radius: 16px;
 	  --card-padding: 16px;
 	  --gap-lg: 24px;

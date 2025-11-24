@@ -13,18 +13,18 @@ function Navbar() {
                     </NavLink>
                 </li>
 	        <li>
+                    <NavLink to="/users" className={({ isActive }) => (isActive ? "active" : undefined)}>
+                        Users
+                    </NavLink>
+                </li>
+                <li>
                     <NavLink to="/forecast" className={({ isActive }) => (isActive ? "active" : undefined)}>
                         Forecast
                     </NavLink>
                 </li>
                 <li>
                     <NavLink to="/trip-planner" className={({ isActive }) => (isActive ? "active" : undefined)}>
-                        Calendar
-                    </NavLink>
-                </li>
-                <li>
-                    <NavLink to="/users" className={({ isActive }) => (isActive ? "active" : undefined)}>
-                        Users
+                        Trip Planner
                     </NavLink>
                 </li>
                 <li>

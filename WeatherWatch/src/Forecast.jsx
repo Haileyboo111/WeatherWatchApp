@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Forecast.css';
 import { getDailyAggregation, geocodeLocation } from './api/openweather';
 
@@ -67,6 +67,7 @@ function Forecast() {
       const today = new Date();
       const dates = [];
       const numDays = view === 'daily' ? 1 : 7;
+
       for (let i = 0; i < numDays; i++) {
         const d = new Date(today);
         d.setDate(today.getDate() + i);
@@ -82,6 +83,7 @@ function Forecast() {
       const results = await Promise.all(requests);
       const mapped = results.map((daily, i) => formatWeather(daily, dates[i]));
       setWeatherData(mapped);
+
     } catch (err) {
       console.error(err);
       setError('Could not fetch weather data.');
@@ -89,6 +91,13 @@ function Forecast() {
       setLoading(false);
     }
   };
+
+  // 🔥 Automatically fetch new weather whenever view changes (daily ↔ weekly)
+  useEffect(() => {
+    if (location) {
+      fetchWeather();
+    }
+  }, [view]);
 
   return (
     <section className="page">
@@ -154,4 +163,5 @@ function Forecast() {
 }
 
 export default Forecast;
+
 

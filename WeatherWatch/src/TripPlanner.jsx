@@ -174,19 +174,23 @@ function TripPlanner() {
     await fetchWeatherForTrip(selectedPlace, start, end);
   };
 
-  // render
-  return (
-    <section className="page">
+// render
+return (
+  <section className="page">
+    <div className="card trip-planner-card">
       <h2>Trip Planner</h2>
       <p>Select a date to plan your trip.</p>
 
+      {/* Destination Card */}
       <div className="card trip-card">
         <div className="trip-card__header">
           <div>
             <h3>Destination</h3>
             <p className="muted">Search for a city or address to plan your trip.</p>
           </div>
-          {selectedPlace && <span className="trip-destination__pill">Selected: {selectedPlace.name}</span>}
+          {selectedPlace && (
+            <span className="trip-destination__pill">Selected: {selectedPlace.name}</span>
+          )}
         </div>
 
         <form className="trip-destination" onSubmit={handleDestinationSearch}>
@@ -223,30 +227,38 @@ function TripPlanner() {
       {loading && <p>Loading weather info...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {/* Weather data */}
-      {weatherData && tripDates.map((date, i) => {
-        const info = weatherData[i];
-        if (!info) return null;
-        return (
-          <div key={i} style={{ marginTop: 16 }}>
-            <h3>Weather for {info.date}</h3>
-            {selectedPlace && <p className="muted" style={{ marginTop: 4 }}>Destination: {selectedPlace.name}</p>}
-            <p>
-              Temperature: {info.temperature.min}°F - {info.temperature.max}°F<br/>
-              Morning: {info.temperature.morning}°F<br/>
-              Afternoon: {info.temperature.afternoon}°F<br/>
-              Evening: {info.temperature.evening}°F<br/>
-              Night: {info.temperature.night}°F
-            </p>
-            <p>Precipitation: {info.precipitation} mm</p>
-            <p>Cloud cover: {info.cloudCover}%</p>
-            <p>Wind: {info.wind.speed} m/s {info.wind.direction}</p>
-            <p>Humidity: {info.humidity}%</p>
-          </div>
-        );
-      })}
-    </section>
-  );
+      {/* Weather cards container */}
+      <div className="weather-cards-container">
+        {weatherData &&
+          tripDates.map((date, i) => {
+            const info = weatherData[i];
+            if (!info) return null;
+            return (
+              <div key={i} className="card weather-card" style={{ marginTop: 16 }}>
+                <h3>Weather for {info.date}</h3>
+                {selectedPlace && (
+                  <p className="muted" style={{ marginTop: 4 }}>
+                    Destination: {selectedPlace.name}
+                  </p>
+                )}
+                <p>
+                  Temperature: {info.temperature.min}°F - {info.temperature.max}°F<br />
+                  Morning: {info.temperature.morning}°F<br />
+                  Afternoon: {info.temperature.afternoon}°F<br />
+                  Evening: {info.temperature.evening}°F<br />
+                  Night: {info.temperature.night}°F
+                </p>
+                <p>Precipitation: {info.precipitation} mm</p>
+                <p>Cloud cover: {info.cloudCover}%</p>
+                <p>Wind: {info.wind.speed} m/s {info.wind.direction}</p>
+                <p>Humidity: {info.humidity}%</p>
+              </div>
+            );
+          })}
+      </div>
+    </div>
+  </section>
+);
 }
 
 export default TripPlanner;
