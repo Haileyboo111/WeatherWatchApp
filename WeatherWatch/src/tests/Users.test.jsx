@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import Users from "../Users";
+import Users from "./Users";
 import * as AuthModule from "../context/AuthContext";
 import { vi } from "vitest";
 
