@@ -27,3 +27,11 @@ export async function getWeatherOverview(lat, lon) {
   const res = await axios.get(url);
   return res.data;
 }
+
+// geocode a user-entered place name into coordinates
+export async function geocodeLocation(query) {
+  const url = `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(query)}&limit=1&appid=${api_key}`;
+  const res = await axios.get(url);
+  if (!res.data || res.data.length === 0) return null;
+  return res.data[0];
+}

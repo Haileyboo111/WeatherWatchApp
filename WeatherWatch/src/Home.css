@@ -1,0 +1,17 @@
+.home-text {
+    font-family: Alfa Slab One;
+    color: rgba(255, 255, 255, 0.87);
+    font-size: 7em;
+    font-weight: bold;
+    padding-right: 200px;
+    padding-bottom: 0px;
+}
+
+.home-slogan {
+    font-family: Alfa Slab One;
+    color: rgba(172, 167, 167, 0.87);
+    font-size: 3em;
+    font-weight: bold;
+    padding-right: 150px;
+    padding-bottom: 100px;   
+}

@@ -12,11 +12,15 @@ import CalendarWithMockData from './mockdata/CalendarWithMockData';
 // will later be taken out 
 =======
 import Forecast from './Forecast';
+<<<<<<< HEAD
 >>>>>>> f38b87210b50c97178b4b3d41edae1679b57e244
+=======
+import { AuthProvider } from './context/AuthContext';
+>>>>>>> main
 
 function App() {
   return (
-    <>
+    <AuthProvider>
       <Navbar />
       <main>
         <Routes>
@@ -28,7 +32,7 @@ function App() {
           <Route path="/mockdata" element={<CalendarWithMockData />} />
         </Routes>
       </main>
-    </>
+    </AuthProvider>
   );
 }
 
