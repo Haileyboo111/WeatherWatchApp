@@ -7,16 +7,18 @@ import Home from './Home';
 import TripPlanner from './TripPlanner';
 import Users from './Users';
 import About from './About';
-<<<<<<< HEAD
 import CalendarWithMockData from './mockdata/CalendarWithMockData'; 
 // will later be taken out 
-=======
 import Forecast from './Forecast';
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> f38b87210b50c97178b4b3d41edae1679b57e244
 =======
 import { AuthProvider } from './context/AuthContext';
 >>>>>>> main
+=======
+import { AuthProvider } from './context/AuthContext';
+>>>>>>> caeb7bccc5378cdbf9a42ae0aeed8c4cebc1da8b
 
 function App() {
   return (
