@@ -19,11 +19,12 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
-	  <Route path="/forecast" element={<Forecast />} />
+	        <Route path="/forecast" element={<Forecast />} />
           <Route path="/trip-planner" element={<TripPlanner />} />
           <Route path="/users" element={<Users />} />
           <Route path="/about" element={<About />} />
           <Route path="/mockdata" element={<CalendarWithMockData />} />
+          <Route path="*" element={<Home />} />
         </Routes>
       </main>
     </AuthProvider>
