@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt'); // for password hashing
 const sqlite3 = require('sqlite3').verbose(); // SQLite3 database
+const path = require('path');
 
 // database setup
 // initialize SQLite database, the file users.db will store user data
@@ -18,6 +19,16 @@ db.run(`CREATE TABLE IF NOT EXISTS users (
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL
+)`);
+
+// create trip history table if it doesn't exist
+db.run(`CREATE TABLE IF NOT EXISTS trip_history (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    location TEXT NOT NULL,
+    date TEXT,
+    info TEXT,
+    FOREIGN KEY(user_id) REFERENCES users(id)
 )`);
 
 // register, handles new user registration
@@ -76,7 +87,42 @@ router.post('/login', (req, res) => {
         const match = await bcrypt.compare(password, user.password);
         if (!match) return res.status(401).json({ message: "Invalid email or password" });
         // success, return user info (excluding password)
-        res.json({ id: user.id, name: user.name, email: user.email });
+        res.json({
+            user: {
+                id: user.id, 
+                name: user.name, 
+                email: user.email 
+            }
+        });
+    });
+});
+
+// retrieve trip history
+router.get('/:id/history', (req, res) => {
+    const userID = req.params.id;
+
+    db.all('SELECT location, date, info FROM trip_history WHERE user_id = ? ORDER BY id DESC', [userID],
+        (err, rows) => {
+            if (err) {
+                return res.status(500).json({ message: "DB error", error: err.message });}
+                res.json({ history: rows });
+    });
+});
+
+// save trip history
+router.post('/:id/history', (req, res) => {
+    const userID = req.params.id;
+    const { location, date, info } = req.body;
+    if (!location) {
+        return res.status(400).json({ message: "Location is required" });
+    }
+    db.run('INSERT INTO trip_history (user_id, location, date, info) VALUES (?, ?, ?, ?)',
+        [userID, location, date || "", info || ""],
+        function(err) {
+            if (err) {
+                return res.status(500).json({ message: "DB error", error: err.message });
+            }
+            res.json({ message: "Trip saved successfully", tripId: this.lastID });
     });
 });
 

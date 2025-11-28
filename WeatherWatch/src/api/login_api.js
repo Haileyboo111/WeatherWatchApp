@@ -5,7 +5,7 @@ const API_URL = 'http://localhost:5001'; // backend server URL
 export const loginUser = async (email, password) => {
   try {
     const response = await axios.post(`${API_URL}/users/login`, { email, password });
-    return response.data;
+    return { user: response.data.user };
   } catch (error) {
     throw error.response?.data?.message || "Login failed";
   }
@@ -15,7 +15,7 @@ export const loginUser = async (email, password) => {
 export const registerUser = async (name, email, password) => {
   try {
     const response = await axios.post(`${API_URL}/users/register`, { name, email, password });
-    return response.data;
+    return { user: response.data.user };
   } catch (error) {
     throw error.response?.data?.message || "Registration Failed";
   }
