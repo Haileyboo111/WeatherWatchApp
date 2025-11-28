@@ -27,7 +27,11 @@ function Users() {
     const fetchHistory = async () => {
       try {
         const response = await axios.get(`http://localhost:5001/users/${user.id}/history`);
-        setHistory(response.data.history);
+        const parsed = response.data.history.map(trip => ({
+          ...trip,
+          weather: trip.info ? JSON.parse(trip.info) : null
+        }));
+        setHistory(parsed);
       } catch (err) {
         setHistory([]);
       }
@@ -164,6 +168,21 @@ function Users() {
                 {history.map((trip, i) => (
                   <li key={i}>
                     <strong>{trip.location}</strong> - {trip.date}
+                    {trip.weather && trip.weather.map((info, j) => (
+                      <div key ={j} style={{ marginLeft: 16 }}>
+                        <p>
+                          Temperature: {info.temperature.min}°F - {info.temperature.max}°F<br />
+                          Morning: {info.temperature.morning}°F<br />
+                          Afternoon: {info.temperature.afternoon}°F<br />
+                          Evening: {info.temperature.evening}°F<br />
+                          Night: {info.temperature.night}°F
+                        </p>
+                        <p>Precipitation: {info.precipitation} mm</p>
+                        <p>Cloud cover: {info.cloudCover}%</p>
+                        <p>Wind: {info.wind.speed} m/s {info.wind.direction}</p>
+                        <p>Humidity: {info.humidity}%</p>
+                      </div>
+                    ))}
                   </li>
                 ))}
               </ul>
