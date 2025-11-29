@@ -1,0 +1,27 @@
+.home-container {
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    position: absolute; 
+    top: 200px; 
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.home-text {
+    font-family: Alfa Slab One;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 4.5em;
+    font-weight: bold;
+    margin: 0;
+}
+
+.home-slogan {
+    font-family: Alfa Slab One;
+    color: rgb(90, 130, 180);
+    font-size: 2em;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 0px; 
+    text-align: center;
+}

@@ -4,6 +4,8 @@ import './Calendar.css';
 // Small month-view calendar with simple navigation and selection
 
 function Calendar({ value, onChange }) {
+  const isMulti = Array.isArray(value);
+
   // Reference for "today"
   const today = new Date();
   // Month currently shown in the calendar
@@ -59,7 +61,9 @@ function Calendar({ value, onChange }) {
         ))}
 
         {cells.map(({ date, outside }, idx) => {
-          const selected = isSameDay(value, date);
+	  const selected = isMulti
+	    ? value.some((d) => isSameDay(d, date))
+	    : isSameDay(value, date);
           const isToday = isSameDay(today, date);
           const classNames = [
             'calendar__day',
@@ -73,7 +77,23 @@ function Calendar({ value, onChange }) {
               key={idx}
               type="button"
               className={classNames}
-              onClick={() => onChange && onChange(new Date(date.getFullYear(), date.getMonth(), date.getDate()))}
+	      onClick={() => {
+	        if (!onChange) return;
+		
+		const day = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+		if (isMulti) {
+	          const exists = value.some((d) => isSameDay(d, day));
+	          const next = exists 
+		    ? value.filter((d) => !isSameDay(d, day))
+		    : [...value, day];
+		  
+		  onChange(next);
+		} else {
+	            onChange(day);
+		}
+	      }}
+              //onClick={() => onChange && onChange(new Date(date.getFullYear(), date.getMonth(), date.getDate()))}
               aria-pressed={selected}
               role="gridcell"
               aria-label={date.toDateString()}
@@ -88,4 +108,3 @@ function Calendar({ value, onChange }) {
 }
 
 export default Calendar;
-
