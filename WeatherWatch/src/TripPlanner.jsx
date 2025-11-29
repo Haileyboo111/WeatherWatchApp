@@ -3,6 +3,8 @@ import Calendar from './Calendar';
 import './Calendar.css';
 import './TripPlanner.css';
 import { getDailyAggregation, geocodeLocation } from './api/openweather';
+import axios from 'axios';
+import { useAuth } from './context/AuthContext';
 
 // convert kelvin to fahrenheit
 const kelvinToFahrenheit = (k) => +(((k - 273.15) * 9) / 5 + 32).toFixed(0);
@@ -43,6 +45,7 @@ const formatWeather = (data, dateObj) => {
 };
 
 function TripPlanner() {
+  const { user } = useAuth();
   const [tripStart, setTripStart] = useState(null);
   const [tripEnd, setTripEnd] = useState(null);
   const [tripDates, setTripDates] = useState([]);
@@ -174,6 +177,22 @@ function TripPlanner() {
     await fetchWeatherForTrip(selectedPlace, start, end);
   };
 
+  const handleSaveTrip = async () => {
+    if (!user || !selectedPlace || !tripStart) {
+      return;
+    }
+    try {
+      const response = await axios.post(`http://localhost:5001/users/${user.id}/history`, {
+        location: selectedPlace.name,
+        date: tripStart.toLocaleDateString(),
+        info: JSON.stringify(weatherData)
+      });
+      alert('Trip saved successfully!');
+    } catch (err) {
+      alert('Failed to save trip.');
+    }
+  };
+
 // render
 return (
   <section className="page">
@@ -221,6 +240,13 @@ return (
         <p style={{ marginTop: 16 }}>
           Trip: {tripStart.toLocaleDateString()} {tripEnd ? `— ${tripEnd.toLocaleDateString()}` : ''}
         </p>
+      )}
+
+      {/* Save Trip Button */}
+      {user && selectedPlace && tripStart && (
+        <button className="trip-action" onClick={handleSaveTrip} style={{ marginBottom: 16 }}>
+          Save Trip
+        </button>
       )}
 
       {/* Loading and error */}
