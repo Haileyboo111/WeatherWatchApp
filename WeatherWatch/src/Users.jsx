@@ -3,11 +3,10 @@ import { Form, Button, Container, Alert } from "react-bootstrap";
 import "./Users.css";
 import { loginUser, registerUser } from './api/login_api';
 import { useAuth } from './context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Users() {
-  const { user, login } = useAuth();
+  const { user, login, logout } = useAuth();
   const [isRegister, setIsRegister] = useState(false);
 
   const [name, setName] = useState("");
@@ -15,7 +14,6 @@ function Users() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState('');
 
-  const navigate = useNavigate();
   const [mode, setMode] = useState("login");
   const [history, setHistory] = useState([]);
 
@@ -70,6 +68,15 @@ function Users() {
     } catch (err) {
       setError(err);
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    setMode("login");
+    setHistory([]);
+    setName("");
+    setEmail("");
+    setPassword("");
   };
 
   if (!user) {
@@ -160,7 +167,12 @@ function Users() {
       <Container>
         <div className= "users-wrapper">
           <div className="users-form-container">
-            <h2>Welcome {user.name}!</h2>
+            <div className="users-header">
+              <h2>Welcome {user.name}!</h2>
+              <Button variant="outline-secondary" onClick={handleLogout} className="users-logout">
+                Logout
+              </Button>
+            </div>
             {history.length === 0 ? (
               <p>No saved trips yet.</p>
             ) : (
