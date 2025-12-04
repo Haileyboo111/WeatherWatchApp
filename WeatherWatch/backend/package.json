@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll=false"
+    "test": "jest --watchAll=false",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +14,9 @@
     "axios": "^1.13.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "node-fetch": "^3.3.2"
-  }
+    "express": "^5.2.1",
+    "node-fetch": "^3.3.2",
+    "openai": "^6.9.1"
+  },
+  "type": "commonjs"
 }
