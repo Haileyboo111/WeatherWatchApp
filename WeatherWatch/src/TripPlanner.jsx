@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Calendar from './Calendar';
 import './Calendar.css';
 import './TripPlanner.css';
-import { getDailyAggregation, geocodeLocation } from './api/openweather';
+import { getDailyAggregation, geocodeLocation, getAlerts } from './api/openweather';
 import axios from 'axios';
 import { useAuth } from './context/AuthContext';
 
@@ -56,6 +56,7 @@ function TripPlanner() {
   const [destinationInput, setDestinationInput] = useState('');
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [alerts, setAlerts] = useState([]);
 
   // build range of dates
   const buildDateRange = (start, end) => {
@@ -129,11 +130,33 @@ function TripPlanner() {
       const results = await Promise.all(requests);
       const mapped = results.map((daily, i) => formatWeather(daily, allDates[i]));
       setWeatherData(mapped);
+
+      const startDateStr = `${start.getFullYear()}-${pad(start.getMonth() + 1)}-${pad(start.getDate())}`;
+      const endDateStr = `${end.getFullYear()}-${pad(end.getMonth() + 1)}-${pad(end.getDate())}`;
+      const alertsData = await getAlerts(place.lat, place.lon, startDateStr, endDateStr);
+      setAlerts(alertsData);
+
     } catch (err) {
       console.error(err);
       setError('Failed to fetch weather data.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAlertsForTrip = async (place, start, end) => {
+    if (!place || !start || !end) return;
+    
+    const pad = (n) => n.toString().padStart(2, '0');
+    const startDate = `${start.getFullYear()}-${pad(start.getMonth() + 1)}-${pad(start.getDate())}`;
+    const endDate = `${end.getFullYear()}-${pad(end.getMonth() + 1)}-${pad(end.getDate())}`;
+    
+    try {
+      const res = await axios.get(`http://localhost:5001/api/alerts?lat=${place.lat}&lon=${place.lon}&startDate=${startDate}&endDate=${endDate}`);
+      setAlerts(res.data.alerts || []);
+    } catch (err) {
+      console.error('Failed to fetch alerts:', err);
+      setAlerts([]);
     }
   };
 
@@ -175,6 +198,7 @@ function TripPlanner() {
     }
 
     await fetchWeatherForTrip(selectedPlace, start, end);
+    await fetchAlertsForTrip(selectedPlace, start, end);
   };
 
   const handleSaveTrip = async () => {
@@ -252,6 +276,23 @@ return (
       {/* Loading and error */}
       {loading && <p>Loading weather info...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
+
+      {/* Alerts */}
+      {alerts.length > 0 && (
+        <div className="alerts-container" style={{ marginTop: 16 }}>
+          <h3>Severe Weather Alert</h3>
+          {alerts.map((alert, i) => (
+            <div key={i} className="trip-alert">
+              <p><strong>{alert.event}</strong></p>
+              <p>{alert.description}</p>
+              <p>
+                From: {new Date(alert.start * 1000).toLocaleString()}<br />
+                To: {new Date(alert.end * 1000).toLocaleString()}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Weather cards container */}
       <div className="weather-cards-container">
