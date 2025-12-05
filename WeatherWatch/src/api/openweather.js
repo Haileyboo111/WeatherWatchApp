@@ -35,3 +35,9 @@ export async function geocodeLocation(query) {
   if (!res.data || res.data.length === 0) return null;
   return res.data[0];
 }
+
+export async function getAlerts(lat, lon, startDate, endDate) {
+  const url = `http://localhost:5001/api/alerts?lat=${lat}&lon=${lon}&startDate=${startDate}&endDate=${endDate}`;
+  const res = await axios.get(url);
+  return res.data.alerts;
+}

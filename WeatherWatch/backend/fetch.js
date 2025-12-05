@@ -27,6 +27,21 @@ async function fetchWeatherOverview(lat, lon) {
   }
 }
 
+async function fetchWeatherSummary(weatherData) {
+  try {
+    const res = await fetch(`${BASE_URL}/api/weather-summary`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ weatherData }),
+    });
+    if (!res.ok) throw new Error("Network error");
+    return await res.json();
+  } catch (err) {
+    console.error(err);
+    return { summary: "Could not fetch summary" };
+  }
+}
+
 // optional test
 async function testFetch() {
   const lat = 40.7128;
