@@ -31,16 +31,19 @@ jobs:
           cache-dependency-path: WeatherWatch/package-lock.json
       - name: Install dependencies
         run: npm ci
+      - name: Run tests
+        run: npm test
       - name: Build
         run: npm run build
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: WeatherWatch/dist
+          name: github-pages #tesing purposes
 
   deploy:
     needs: build
-    if: github.event_name == 'push'
+    #if: github.event_name == 'push'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

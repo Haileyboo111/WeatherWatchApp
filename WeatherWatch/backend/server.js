@@ -2,26 +2,40 @@
 // this is the backend server for the weather app,
 
 require('dotenv').config();
-const API_KEY = process.env.API_KEY;
-
-// uses Express to handle HTTP requests from the front end
-// and Axios (via open-weather-api) to fetch data from source 
 const express = require('express');
 const cors = require('cors');
-const { getForecast, getWeatherOverview } = require('./open_weather_api'); // open weather file 
+const { getForecast, getWeatherOverview } = require('./open_weather_api');
+const usersRouter = require('./routes/users'); // import user routes
 
 const app = express();
-app.use(cors()); // allow requests from front end 
 
-// route to get forecasts 
-app.get('/api/forecast', async (req, res) => { 
-  console.log("Forecasts request received:", req.query); // log statement to check where requests are failing 
-  // tagged as need to work on this next sprint 
+// CORS configuration to allow requests from local dev ports
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// middleware to parse JSON bodies and log requests
+app.use(express.json());
+app.use((req, res, next) => {
+  console.log("Request received:", req.method, req.url);
+  next();
+});
+
+// mount user routes, now all /users routes go to routes/users.js
+app.use('/users', usersRouter);
+
+// weather routes, fetch data from OpenWeather API
+app.get('/api/forecast', async (req, res) => {
+
   const { lat, lon } = req.query;
+  // validate query parameters
   if (!lat || !lon) return res.status(400).json({ error: "Lat & lon required" });
 
+  // fetch forecast data
   try {
-    // call the backend API function (API_KEY already handled in open_weather_api.js)
     const data = await getForecast(parseFloat(lat), parseFloat(lon));
     res.json(data);
   } catch (err) {
@@ -30,16 +44,14 @@ app.get('/api/forecast', async (req, res) => {
   }
 });
 
-// route to get weather overview, will return a readable summary of the weather 
 app.get('/api/overview', async (req, res) => {
-  console.log("Overview request received:", req.query); // log 
   const { lat, lon } = req.query;
+  // validate query parameters
   if (!lat || !lon) return res.status(400).json({ error: "Lat & lon required" });
-
+  // fetch overview data
   try {
-    // call the backend API function
     const data = await getWeatherOverview(parseFloat(lat), parseFloat(lon));
-    res.json(data);
+      res.json(data);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Could not fetch overview" });
@@ -47,5 +59,5 @@ app.get('/api/overview', async (req, res) => {
 });
 
 // start server 
-const PORT = 5000;
+const PORT = 5001;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

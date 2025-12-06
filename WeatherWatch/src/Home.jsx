@@ -10,13 +10,10 @@ function Home() {
     };
   }, []);
   return (
-    <>
+    <div className="home-container">
       <div className="home-text">Weather Watch </div>
-      <div className="home-slogan">
-        <p>Plan Smart. Travel Safe.</p>
+      <div className="home-slogan">Plan Smart. Travel Safe.</div>
       </div>
-
-    </>
   );
 }
 
