@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Container, Alert } from "react-bootstrap";
 import "./Users.css";
-import { loginUser, registerUser } from './api/login_api';
-import { useAuth } from './context/AuthContext';
-import axios from 'axios';
+import { loginUser, registerUser } from "./api/login_api";
+import { useAuth } from "./context/AuthContext";
+import axios from "axios";
+import { convertTemperature, getUnitSymbol, useUnit } from "./context/UnitContext";
 
 function Users() {
   const { user, login, logout } = useAuth();
-  const [isRegister, setIsRegister] = useState(false);
+  const { unit } = useUnit();
+  const unitSymbol = getUnitSymbol(unit);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState('');
-
+  const [error, setError] = useState("");
   const [mode, setMode] = useState("login");
   const [history, setHistory] = useState([]);
 
@@ -21,13 +22,13 @@ function Users() {
     if (!user) {
       return;
     }
-    
+
     const fetchHistory = async () => {
       try {
         const response = await axios.get(`http://localhost:5001/users/${user.id}/history`);
-        const parsed = response.data.history.map(trip => ({
+        const parsed = response.data.history.map((trip) => ({
           ...trip,
-          weather: trip.info ? JSON.parse(trip.info) : null
+          weather: trip.info ? JSON.parse(trip.info) : null,
         }));
         setHistory(parsed);
       } catch (err) {
@@ -39,31 +40,28 @@ function Users() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (!email || !password) {
-      setError('Enter both email and password.');
+      setError("Enter both email and password.");
       return;
-    } 
-
+    }
 
     const data = await loginUser(email, password);
     login(data.user);
-
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (!name || !email || !password) {
-      setError('Enter name, email, and password.');
+      setError("Enter name, email, and password.");
       return;
     }
 
     try {
-      const data = await registerUser(name, email, password);
-      //login(data.user);
+      await registerUser(name, email, password);
       setMode("login");
     } catch (err) {
       setError(err);
@@ -79,6 +77,26 @@ function Users() {
     setPassword("");
   };
 
+  const renderTripWeather = (info) => (
+    <p>
+      Temperature: {convertTemperature(info.temperature.min, unit)}
+      {unitSymbol} - {convertTemperature(info.temperature.max, unit)}
+      {unitSymbol}
+      <br />
+      Morning: {convertTemperature(info.temperature.morning, unit)}
+      {unitSymbol}
+      <br />
+      Afternoon: {convertTemperature(info.temperature.afternoon, unit)}
+      {unitSymbol}
+      <br />
+      Evening: {convertTemperature(info.temperature.evening, unit)}
+      {unitSymbol}
+      <br />
+      Night: {convertTemperature(info.temperature.night, unit)}
+      {unitSymbol}
+    </p>
+  );
+
   if (!user) {
     return (
       <Container>
@@ -88,10 +106,7 @@ function Users() {
 
             {error && <Alert className="red-alert">{error}</Alert>}
 
-            <Form 
-            onSubmit={mode === "login" ? handleLogin : handleRegister}
-            className="users-form"
-            >
+            <Form onSubmit={mode === "login" ? handleLogin : handleRegister} className="users-form">
               {mode === "register" && (
                 <Form.Group className="users-form" controlId="formBasicName">
                   <Form.Label>Name </Form.Label>
@@ -102,7 +117,7 @@ function Users() {
                     onChange={(e) => setName(e.target.value)}
                   />
                 </Form.Group>
-              )} 
+              )}
 
               <Form.Group className="users-form" controlId="formBasicEmail">
                 <Form.Label>Email </Form.Label>
@@ -114,13 +129,13 @@ function Users() {
                 />
               </Form.Group>
 
-              <Form.Group className= "users-form" controlId="formBasicPassword">
+              <Form.Group className="users-form" controlId="formBasicPassword">
                 <Form.Label>Password </Form.Label>
                 <Form.Control
-                type="password"
-                placeholder="Enter password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                  type="password"
+                  placeholder="Enter password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </Form.Group>
 
@@ -165,7 +180,7 @@ function Users() {
   } else {
     return (
       <Container>
-        <div className= "users-wrapper">
+        <div className="users-wrapper">
           <div className="users-form-container">
             <div className="users-header">
               <h2>Welcome {user.name}!</h2>
@@ -180,21 +195,16 @@ function Users() {
                 {history.map((trip, i) => (
                   <li key={i}>
                     <strong>{trip.location}</strong> - {trip.date}
-                    {trip.weather && trip.weather.map((info, j) => (
-                      <div key ={j} style={{ marginLeft: 16 }}>
-                        <p>
-                          Temperature: {info.temperature.min}°F - {info.temperature.max}°F<br />
-                          Morning: {info.temperature.morning}°F<br />
-                          Afternoon: {info.temperature.afternoon}°F<br />
-                          Evening: {info.temperature.evening}°F<br />
-                          Night: {info.temperature.night}°F
-                        </p>
-                        <p>Precipitation: {info.precipitation} mm</p>
-                        <p>Cloud cover: {info.cloudCover}%</p>
-                        <p>Wind: {info.wind.speed} m/s {info.wind.direction}</p>
-                        <p>Humidity: {info.humidity}%</p>
-                      </div>
-                    ))}
+                    {trip.weather &&
+                      trip.weather.map((info, j) => (
+                        <div key={j} style={{ marginLeft: 16 }}>
+                          {renderTripWeather(info)}
+                          <p>Precipitation: {info.precipitation} mm</p>
+                          <p>Cloud cover: {info.cloudCover}%</p>
+                          <p>Wind: {info.wind.speed} m/s {info.wind.direction}</p>
+                          <p>Humidity: {info.humidity}%</p>
+                        </div>
+                      ))}
                   </li>
                 ))}
               </ul>
@@ -202,8 +212,9 @@ function Users() {
           </div>
         </div>
       </Container>
-    )
+    );
   }
- }
+}
 
 export default Users;
+

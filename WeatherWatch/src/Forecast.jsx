@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Forecast.css';
 import { getDailyAggregation, geocodeLocation } from './api/openweather';
+import { convertTemperature, getUnitSymbol, useUnit } from './context/UnitContext';
 
 // Convert Kelvin to Fahrenheit
 const kelvinToFahrenheit = (k) => +(((k - 273.15) * 9) / 5 + 32).toFixed(0);
@@ -45,6 +46,8 @@ function Forecast() {
   const [weatherData, setWeatherData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { unit } = useUnit();
+  const unitSymbol = getUnitSymbol(unit);
 
   const fetchWeather = async () => {
     if (!location) {
@@ -92,7 +95,7 @@ function Forecast() {
     }
   };
 
-  // 🔥 Automatically fetch new weather whenever view changes (daily ↔ weekly)
+  // Automatically fetch new weather whenever view changes (daily or weekly)
   useEffect(() => {
     if (location) {
       fetchWeather();
@@ -146,11 +149,11 @@ function Forecast() {
         <div key={i} className="weather-card">
           <h3>Weather for {info.date}</h3>
           <p>
-            Temperature: {info.temperature.min}°F - {info.temperature.max}°F<br />
-            Morning: {info.temperature.morning}°F<br />
-            Afternoon: {info.temperature.afternoon}°F<br />
-            Evening: {info.temperature.evening}°F<br />
-            Night: {info.temperature.night}°F
+            Temperature: {convertTemperature(info.temperature.min, unit)}{unitSymbol} - {convertTemperature(info.temperature.max, unit)}{unitSymbol}<br />
+            Morning: {convertTemperature(info.temperature.morning, unit)}{unitSymbol}<br />
+            Afternoon: {convertTemperature(info.temperature.afternoon, unit)}{unitSymbol}<br />
+            Evening: {convertTemperature(info.temperature.evening, unit)}{unitSymbol}<br />
+            Night: {convertTemperature(info.temperature.night, unit)}{unitSymbol}
           </p>
           <p>Precipitation: {info.precipitation} mm</p>
           <p>Cloud cover: {info.cloudCover}%</p>
@@ -163,5 +166,4 @@ function Forecast() {
 }
 
 export default Forecast;
-
 
