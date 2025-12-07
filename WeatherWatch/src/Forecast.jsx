@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Forecast.css';
-import { getDailyAggregation, geocodeLocation } from './api/openweather';
+import { getDailyAggregation, geocodeLocation, getWeatherOverview } from './api/openweather';
 import { convertTemperature, getUnitSymbol, useUnit } from './context/UnitContext';
 
 // Convert Kelvin to Fahrenheit
@@ -46,8 +46,31 @@ function Forecast() {
   const [weatherData, setWeatherData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [apiSummary, setApiSummary] = useState(null);
   const { unit } = useUnit();
   const unitSymbol = getUnitSymbol(unit);
+
+  const parseApiSummary = (data) => {
+    if (!data || typeof data !== 'object') return null;
+    const candidates = [
+      data.summary,
+      data.overview,
+      data.weather_overview,
+      data.text,
+      data.daily?.[0]?.summary,
+      data.daily_overview?.[0]?.summary,
+      data.forecast?.[0]?.summary,
+    ];
+    const found = candidates.find((val) => typeof val === 'string' && val.trim());
+    return found ? found.trim() : null;
+  };
+
+  const buildFallbackSummary = (info) => {
+    if (!info) return null;
+    const high = convertTemperature(info.temperature.max, unit);
+    const low = convertTemperature(info.temperature.min, unit);
+    return `High ${high}${unitSymbol}, low ${low}${unitSymbol}. Precipitation ${info.precipitation} mm. Wind ${info.wind.speed} m/s ${info.wind.direction}. Humidity ${info.humidity}%.`;
+  };
 
   const fetchWeather = async () => {
     if (!location) {
@@ -58,6 +81,7 @@ function Forecast() {
     setLoading(true);
     setError(null);
     setWeatherData([]);
+    setApiSummary(null);
 
     try {
       const geo = await geocodeLocation(location.trim());
@@ -83,9 +107,16 @@ function Forecast() {
         return getDailyAggregation(geo.lat, geo.lon, dateStr);
       });
 
-      const results = await Promise.all(requests);
+      const overviewPromise = getWeatherOverview(geo.lat, geo.lon).catch((err) => {
+        console.error('Could not fetch overview', err);
+        return null;
+      });
+      const resultsPromise = Promise.all(requests);
+
+      const [overviewData, results] = await Promise.all([overviewPromise, resultsPromise]);
       const mapped = results.map((daily, i) => formatWeather(daily, dates[i]));
       setWeatherData(mapped);
+      setApiSummary(parseApiSummary(overviewData));
 
     } catch (err) {
       console.error(err);
@@ -101,6 +132,8 @@ function Forecast() {
       fetchWeather();
     }
   }, [view]);
+
+  const summaryText = apiSummary || buildFallbackSummary(weatherData[0]);
 
   return (
     <section className="page">
@@ -144,6 +177,11 @@ function Forecast() {
       {/* Loading, error, and weather display */}
       {loading && <p className="loading">Loading...</p>}
       {error && <p className="error">{error}</p>}
+      {summaryText && (
+        <div className="weather-summary">
+          <strong>Summary:</strong> {summaryText}
+        </div>
+      )}
 
       {weatherData.map((info, i) => (
         <div key={i} className="weather-card">
@@ -166,4 +204,3 @@ function Forecast() {
 }
 
 export default Forecast;
-
