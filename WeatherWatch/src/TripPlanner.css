@@ -24,13 +24,14 @@
   transition: transform 0.2s ease-in-out;
 }
 
-.weather-card{
+.weather-card {
   padding: 16px;
   border-radius: 16px; 
   background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(247,249,252,0.95));
   box-shadow: 0 8px 24px rgba(27,50,85,0.08);
   border: 1px solid rgba(20,40,70,0.04);
   margin-top: 16px;
+}
 
 .trip-destination {
   display: flex;
@@ -93,6 +94,15 @@
   color: var(--sky-deep);
   border-radius: 999px;
   font-weight: 700;
+}
+
+.trip-alert {
+  margin-top: 8px;
+  padding: 8px;
+  background-color: #ffe6e6;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  font-size: 0.8rem;
 }
 
 @media (max-width: 540px) {

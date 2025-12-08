@@ -43,6 +43,12 @@ async function getWeatherOverview(lat, lon){
   return res.data;
 }
 
+async function getWeatherAlerts(lat, lon) {
+  const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&appid=${api_key}`;
+  const res = await axios.get(url);
+  return res.data.alerts || [];  
+}
+
 /* test placeholder commented out for now */
 // Uncomment the lines to test endpoints locally
 /*
@@ -71,4 +77,4 @@ async function getWeatherOverview(lat, lon){
 })();
 */
 
-module.exports = { getForecast, getTimestamp, getDailyAggregation, getWeatherOverview };
+module.exports = { getForecast, getTimestamp, getDailyAggregation, getWeatherOverview, getWeatherAlerts };
