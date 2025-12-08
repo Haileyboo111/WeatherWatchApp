@@ -1,0 +1,33 @@
+version: '3.8'
+
+# WeatherWatch Docker Compose Configuration
+# Created by: Breona Saffouri
+# Status: Template - Database configuration needed
+# 
+# HANDOFF NOTES FOR DATABASE INTEGRATION:
+# 1. Update the 'db' service with proper database image (PostgreSQL/SQLite)
+# 2. Configure database environment variables (user, password, database name)
+# 3. Add volume mounts for database persistence
+# 4. Update backend environment variables to connect to database
+# 5. Test database connectivity between services
+# 6. Consider adding health checks for database readiness
+
+services:
+  # Backend API service
+  backend:
+    build: .
+    container_name: weatherwatch-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      # TODO: Add database connection environment variables
+    restart: unless-stopped
+
+  # Database service - TO BE CONFIGURED
+  # Configuration to be completed by teammate handling database integration
+  # Consider: volume persistence, environment variables, health checks
+  db:
+    # Database setup goes here
+    # Suggested: postgres:15-alpine or appropriate image
