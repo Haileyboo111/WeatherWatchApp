@@ -1,8 +1,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import "./Navbar.css";
+import { useUnit, getUnitSymbol } from "./context/UnitContext";
 
 function Navbar() {
+    const { unit, toggleUnit } = useUnit();
+    const nextUnit = unit === "celsius" ? "Fahrenheit" : "Celsius";
+
     return (
         <nav className="navbar">
             <h3 className="logo">Weather Watch</h3>
@@ -33,6 +37,14 @@ function Navbar() {
                     </NavLink>
                 </li>
             </ul>
+            <button
+                type="button"
+                className="unit-toggle"
+                aria-label={`Switch to ${nextUnit}`}
+                onClick={toggleUnit}
+            >
+                {getUnitSymbol(unit)} • {nextUnit}
+            </button>
         </nav>
     );
 }

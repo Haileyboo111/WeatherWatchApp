@@ -5,6 +5,7 @@ import './TripPlanner.css';
 import { getDailyAggregation, geocodeLocation, getAlerts } from './api/openweather';
 import axios from 'axios';
 import { useAuth } from './context/AuthContext';
+import { convertTemperature, getUnitSymbol, useUnit } from './context/UnitContext';
 
 // convert kelvin to fahrenheit
 const kelvinToFahrenheit = (k) => +(((k - 273.15) * 9) / 5 + 32).toFixed(0);
@@ -46,6 +47,9 @@ const formatWeather = (data, dateObj) => {
 
 function TripPlanner() {
   const { user } = useAuth();
+  const { unit } = useUnit();
+  const unitSymbol = getUnitSymbol(unit);
+
   const [tripStart, setTripStart] = useState(null);
   const [tripEnd, setTripEnd] = useState(null);
   const [tripDates, setTripDates] = useState([]);
@@ -164,7 +168,7 @@ function TripPlanner() {
   const handleDateChange = async (clickedDate) => {
     setError(null);
 
-    // first click → tripStart
+    // first click -> tripStart
     if (!tripStart || (tripStart && tripEnd)) {
       setTripStart(clickedDate);
       setTripEnd(null);
@@ -174,7 +178,7 @@ function TripPlanner() {
       return;
     }
 
-    // second click → tripEnd
+    // second click -> tripEnd
     if (!tripEnd) {
       if (clickedDate < tripStart) {
         setTripEnd(tripStart);
@@ -206,7 +210,7 @@ function TripPlanner() {
       return;
     }
     try {
-      const response = await axios.post(`http://localhost:5001/users/${user.id}/history`, {
+      await axios.post(`http://localhost:5001/users/${user.id}/history`, {
         location: selectedPlace.name,
         date: tripStart.toLocaleDateString(),
         info: JSON.stringify(weatherData)
@@ -217,47 +221,47 @@ function TripPlanner() {
     }
   };
 
-// render
-return (
-  <section className="page">
-    <div className="card trip-planner-card">
-      <h2>Trip Planner</h2>
-      <p>Select a date to plan your trip.</p>
+  // render
+  return (
+    <section className="page">
+      <div className="card trip-planner-card">
+        <h2>Trip Planner</h2>
+        <p>Select a date to plan your trip.</p>
 
-      {/* Destination Card */}
-      <div className="card trip-card">
-        <div className="trip-card__header">
-          <div>
-            <h3>Destination</h3>
-            <p className="muted">Search for a city or address to plan your trip.</p>
+        {/* Destination Card */}
+        <div className="card trip-card">
+          <div className="trip-card__header">
+            <div>
+              <h3>Destination</h3>
+              <p className="muted">Search for a city or address to plan your trip.</p>
+            </div>
+            {selectedPlace && (
+              <span className="trip-destination__pill">Selected: {selectedPlace.name}</span>
+            )}
           </div>
-          {selectedPlace && (
-            <span className="trip-destination__pill">Selected: {selectedPlace.name}</span>
-          )}
+
+          <form className="trip-destination" onSubmit={handleDestinationSearch}>
+            <label className="trip-destination__label" htmlFor="destination-input">
+              Where to?
+            </label>
+            <input
+              id="destination-input"
+              className="trip-input"
+              type="text"
+              placeholder="e.g., Paris, France"
+              value={destinationInput}
+              onChange={(e) => setDestinationInput(e.target.value)}
+            />
+            <button type="submit" className="trip-action" disabled={locationLoading}>
+              {locationLoading ? 'Searching...' : 'Set Destination'}
+            </button>
+          </form>
         </div>
 
-        <form className="trip-destination" onSubmit={handleDestinationSearch}>
-          <label className="trip-destination__label" htmlFor="destination-input">
-            Where to?
-          </label>
-          <input
-            id="destination-input"
-            className="trip-input"
-            type="text"
-            placeholder="e.g., Paris, France"
-            value={destinationInput}
-            onChange={(e) => setDestinationInput(e.target.value)}
-          />
-          <button type="submit" className="trip-action" disabled={locationLoading}>
-            {locationLoading ? 'Searching...' : 'Set Destination'}
-          </button>
-        </form>
-      </div>
-
-      {/* Calendar */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
-        <Calendar value={selectedDate} onChange={handleDateChange} />
-      </div>
+        {/* Calendar */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
+          <Calendar value={selectedDate} onChange={handleDateChange} />
+        </div>
 
       {/* Show trip range */}
       {tripStart && (
@@ -307,25 +311,17 @@ return (
                   <p className="muted" style={{ marginTop: 4 }}>
                     Destination: {selectedPlace.name}
                   </p>
-                )}
-                <p>
-                  Temperature: {info.temperature.min}°F - {info.temperature.max}°F<br />
-                  Morning: {info.temperature.morning}°F<br />
-                  Afternoon: {info.temperature.afternoon}°F<br />
-                  Evening: {info.temperature.evening}°F<br />
-                  Night: {info.temperature.night}°F
-                </p>
-                <p>Precipitation: {info.precipitation} mm</p>
-                <p>Cloud cover: {info.cloudCover}%</p>
-                <p>Wind: {info.wind.speed} m/s {info.wind.direction}</p>
-                <p>Humidity: {info.humidity}%</p>
-              </div>
-            );
-          })}
+                  <p>Precipitation: {info.precipitation} mm</p>
+                  <p>Cloud cover: {info.cloudCover}%</p>
+                  <p>Wind: {info.wind.speed} m/s {info.wind.direction}</p>
+                  <p>Humidity: {info.humidity}%</p>
+                </div>
+              );
+            })}
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
 }
 
 export default TripPlanner;
