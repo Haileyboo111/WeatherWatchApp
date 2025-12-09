@@ -17,11 +17,10 @@ function Users() {
   const [error, setError] = useState("");
   const [mode, setMode] = useState("login");
   const [history, setHistory] = useState([]);
+  const [expandedTrips, setExpandedTrips] = useState({});
 
   useEffect(() => {
-    if (!user) {
-      return;
-    }
+    if (!user) return;
 
     const fetchHistory = async () => {
       try {
@@ -38,6 +37,13 @@ function Users() {
     fetchHistory();
   }, [user]);
 
+  const toggleTrip = (index) => {
+    setExpandedTrips((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
@@ -47,8 +53,19 @@ function Users() {
       return;
     }
 
-    const data = await loginUser(email, password);
-    login(data.user);
+    try {
+      const data = await loginUser(email, password);
+      if (!data.user) {
+        setError("Invalid email or password.");
+        return;
+      }
+      login(data.user);
+      setEmail("");
+      setPassword("");
+      setError("");
+    } catch (err) {
+      setError(typeof err === "string" ? err : err.message || "Login failed");
+    }
   };
 
   const handleRegister = async (e) => {
@@ -63,8 +80,12 @@ function Users() {
     try {
       await registerUser(name, email, password);
       setMode("login");
+      setName("");
+      setEmail("");
+      setPassword("");
+      setError("");
     } catch (err) {
-      setError(err);
+      setError(typeof err === "string" ? err : err.message || "Registration failed");
     }
   };
 
@@ -75,27 +96,50 @@ function Users() {
     setName("");
     setEmail("");
     setPassword("");
+    setError("");
   };
 
-  const renderTripWeather = (info) => (
-    <p>
-      Temperature: {convertTemperature(info.temperature.min, unit)}
-      {unitSymbol} - {convertTemperature(info.temperature.max, unit)}
-      {unitSymbol}
-      <br />
-      Morning: {convertTemperature(info.temperature.morning, unit)}
-      {unitSymbol}
-      <br />
-      Afternoon: {convertTemperature(info.temperature.afternoon, unit)}
-      {unitSymbol}
-      <br />
-      Evening: {convertTemperature(info.temperature.evening, unit)}
-      {unitSymbol}
-      <br />
-      Night: {convertTemperature(info.temperature.night, unit)}
-      {unitSymbol}
-    </p>
+  const renderWeatherBoxes = (info, date) => (
+    <div className="trip-weather-grid">
+      <div className="weather-box date-box">
+        <strong>{date}</strong>
+      </div>
+      <div className="weather-box">
+        <strong>Temp:</strong> {convertTemperature(info.temperature.min, unit)}
+        {unitSymbol} - {convertTemperature(info.temperature.max, unit)}
+        {unitSymbol}
+      </div>
+      <div className="weather-box">
+        <strong>Morning:</strong> {convertTemperature(info.temperature.morning, unit)}
+        {unitSymbol}
+      </div>
+      <div className="weather-box">
+        <strong>Afternoon:</strong> {convertTemperature(info.temperature.afternoon, unit)}
+        {unitSymbol}
+      </div>
+      <div className="weather-box">
+        <strong>Evening:</strong> {convertTemperature(info.temperature.evening, unit)}
+        {unitSymbol}
+      </div>
+      <div className="weather-box">
+        <strong>Night:</strong> {convertTemperature(info.temperature.night, unit)}
+        {unitSymbol}
+      </div>
+      <div className="weather-box">
+        <strong>Precipitation:</strong> {info.precipitation} mm
+      </div>
+      <div className="weather-box">
+        <strong>Cloud cover:</strong> {info.cloudCover}%
+      </div>
+      <div className="weather-box">
+        <strong>Wind:</strong> {info.wind.speed} m/s {info.wind.direction}
+      </div>
+      <div className="weather-box">
+        <strong>Humidity:</strong> {info.humidity}%
+      </div>
+    </div>
   );
+
 
   if (!user) {
     return (
@@ -104,12 +148,12 @@ function Users() {
           <div className="users-form-container">
             <h2 className="users-title">{mode === "login" ? "Login" : "Register"}</h2>
 
-            {error && <Alert className="red-alert">{error}</Alert>}
+            {error && <Alert variant="danger">{error}</Alert>}
 
             <Form onSubmit={mode === "login" ? handleLogin : handleRegister} className="users-form">
               {mode === "register" && (
                 <Form.Group className="users-form" controlId="formBasicName">
-                  <Form.Label>Name </Form.Label>
+                  <Form.Label>Name</Form.Label>
                   <Form.Control
                     type="text"
                     placeholder="Enter name"
@@ -120,7 +164,7 @@ function Users() {
               )}
 
               <Form.Group className="users-form" controlId="formBasicEmail">
-                <Form.Label>Email </Form.Label>
+                <Form.Label>Email</Form.Label>
                 <Form.Control
                   type="email"
                   placeholder="Enter email"
@@ -130,7 +174,7 @@ function Users() {
               </Form.Group>
 
               <Form.Group className="users-form" controlId="formBasicPassword">
-                <Form.Label>Password </Form.Label>
+                <Form.Label>Password</Form.Label>
                 <Form.Control
                   type="password"
                   placeholder="Enter password"
@@ -177,44 +221,53 @@ function Users() {
         </div>
       </Container>
     );
-  } else {
-    return (
-      <Container>
-        <div className="users-wrapper">
-          <div className="users-form-container">
-            <div className="users-header">
-              <h2>Welcome {user.name}!</h2>
-              <Button variant="outline-secondary" onClick={handleLogout} className="users-logout">
-                Logout
-              </Button>
-            </div>
-            {history.length === 0 ? (
-              <p>No saved trips yet.</p>
-            ) : (
-              <ul>
-                {history.map((trip, i) => (
-                  <li key={i}>
-                    <strong>{trip.location}</strong> - {trip.date}
-                    {trip.weather &&
-                      trip.weather.map((info, j) => (
-                        <div key={j} style={{ marginLeft: 16 }}>
-                          {renderTripWeather(info)}
-                          <p>Precipitation: {info.precipitation} mm</p>
-                          <p>Cloud cover: {info.cloudCover}%</p>
-                          <p>Wind: {info.wind.speed} m/s {info.wind.direction}</p>
-                          <p>Humidity: {info.humidity}%</p>
+  }
+
+  return (
+    <Container>
+      <div className="users-wrapper">
+        <div className="users-form-container">
+          <div className="users-header">
+            <h2>Welcome {user.name}!</h2>
+            <Button variant="outline-secondary" onClick={handleLogout} className="users-logout">
+              Logout
+            </Button>
+          </div>
+
+          {history.length === 0 ? (
+            <p>No saved trips yet.</p>
+          ) : (
+            <div className="trip-history-container">
+              {history.map((trip, i) => (
+                <div key={i} className="trip-card">
+                  <div
+                    className="trip-header"
+                    onClick={() => toggleTrip(i)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <strong>Trip to {trip.location}</strong> - {trip.date}
+                    <span style={{ float: "right" }}>
+                      {expandedTrips[i] ? "▲" : "▼"}
+                    </span>
+                  </div>
+
+                  {expandedTrips[i] && trip.weather && (
+                    <div className="trip-weather">
+                      {trip.weather.map((info, j) => (
+                        <div key={j}>
+                          {renderWeatherBoxes(info)}
                         </div>
                       ))}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      </Container>
-    );
-  }
+      </div>
+    </Container>
+  );
 }
 
 export default Users;
-

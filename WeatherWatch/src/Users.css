@@ -48,3 +48,52 @@
 .users-logout {
     white-space: nowrap;
 }
+.trip-history-container {
+  margin-top: 16px;
+}
+
+.trip-card {
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: #f9f9f9;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.trip-header {
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.trip-weather {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.weather-info p {
+  margin: 2px 0;
+  font-size: 0.9rem;
+}
+.trip-weather-grid {
+  margin-top: 12px;
+}
+
+.weather-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.weather-box {
+  background: #e0f3ff;
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  font-size: 0.85rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
