@@ -11,22 +11,25 @@ import CalendarWithMockData from './mockdata/CalendarWithMockData';
 // will later be taken out 
 import Forecast from './Forecast';
 import { AuthProvider } from './context/AuthContext';
+import { UnitProvider } from './context/UnitContext';
 
 function App() {
   return (
     <AuthProvider>
-      <Navbar />
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-	        <Route path="/forecast" element={<Forecast />} />
-          <Route path="/trip-planner" element={<TripPlanner />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/mockdata" element={<CalendarWithMockData />} />
-          <Route path="*" element={<Home />} />
-        </Routes>
-      </main>
+      <UnitProvider>
+        <Navbar />
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/forecast" element={<Forecast />} />
+            <Route path="/trip-planner" element={<TripPlanner />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/mockdata" element={<CalendarWithMockData />} />
+            <Route path="*" element={<Home />} />
+          </Routes>
+        </main>
+      </UnitProvider>
     </AuthProvider>
   );
 }

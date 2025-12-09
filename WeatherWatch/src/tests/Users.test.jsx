@@ -1,9 +1,10 @@
-import React from "react";
+import React, { act } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import Users from "../Users";
 import * as AuthModule from "../context/AuthContext";
 import { vi } from "vitest";
+import axios from "axios";
 
 describe("Users Component - Login", () => {
 
@@ -94,4 +95,38 @@ describe("Users Component - Registration", () => {
     });
 });
 
-//More tests?
+//logout tests
+describe("Users Component - Logout", () => {
+
+    const mockLogout = vi.fn();
+
+    beforeEach(() => {
+        vi.spyOn(AuthModule, "useAuth").mockReturnValue({
+            login: vi.fn(),
+            logout: mockLogout,
+            user: { id: 1, name: "Test User" },
+        });
+        vi.spyOn(axios, "get").mockResolvedValue({ data: { history: [] } });
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
+        mockLogout.mockClear();
+    });
+
+    const renderWithProviders = () =>
+        render(
+        <MemoryRouter>
+            <Users />
+        </MemoryRouter>
+    );
+
+    test("shows a logout button and calls logout when clicked", async () => {
+        renderWithProviders();
+        const button = screen.getByRole("button", { name: /logout/i });
+        await act(async () => {
+            fireEvent.click(button);
+        });
+        expect(mockLogout).toHaveBeenCalledTimes(1);
+    });
+});
