@@ -308,21 +308,23 @@ function TripPlanner() {
               <div key={i} className="card weather-card" style={{ marginTop: 16 }}>
                 <h3>Weather for {info.date}</h3>
                 {selectedPlace && (
-                  <p className="muted" style={{ marginTop: 4 }}>
-                    Destination: {selectedPlace.name}
-                  </p>
-                  <p>Precipitation: {info.precipitation} mm</p>
-                  <p>Cloud cover: {info.cloudCover}%</p>
-                  <p>Wind: {info.wind.speed} m/s {info.wind.direction}</p>
-                  <p>Humidity: {info.humidity}%</p>
-                </div>
-              );
-            })}
+                  <div>
+                    <p className="muted" style={{ marginTop: 4 }}>
+                      Destination: {selectedPlace.name}
+                    </p>
+                    <p>Precipitation: {info.precipitation} mm</p>
+                    <p>Cloud cover: {info.cloudCover}%</p>
+                    <p>Wind: {info.wind.speed} m/s {info.wind.direction}</p>
+                    <p>Humidity: {info.humidity}%</p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
-    </section>
-  );
+  </section>
+);
 }
 
 export default TripPlanner;
-
