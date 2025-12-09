@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "vitest run",
-    "test:watch": "vitest",
+    "test": "jest --watchAll=false",
     "start": "node server.js"
   },
   "keywords": [],
@@ -15,12 +14,9 @@
     "axios": "^1.13.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "express": "^5.1.0",
+    "express": "^5.2.1",
     "node-fetch": "^3.3.2",
     "openai": "^6.9.1"
   },
-  "devDependencies": {
-    "supertest": "^7.0.0",
-    "vitest": "^4.0.13"
-  }
+  "type": "commonjs"
 }

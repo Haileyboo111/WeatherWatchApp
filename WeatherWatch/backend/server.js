@@ -6,8 +6,7 @@ const express = require('express');
 const cors = require('cors');
 const { getForecast, getWeatherOverview, getWeatherAlerts } = require('./open_weather_api');
 //const { Configuration, OpenAIApi } = require('openai');
-const OpenAIImport = require("openai");
-const OpenAI = OpenAIImport.default || OpenAIImport;
+const OpenAI = require("openai");
 const usersRouter = require('./routes/users'); // import user routes
 
 const app = express();
@@ -61,13 +60,9 @@ app.get('/api/overview', async (req, res) => {
   }
 });
 
-const createOpenAIClient = () => new OpenAI({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
-
-const openai = process.env.NODE_ENV === 'test' && global.__mockOpenAI
-  ? global.__mockOpenAI
-  : createOpenAIClient();
 
 app.post('/api/weather-summary', async (req, res) => {
   const { weatherData } = req.body;

@@ -1,0 +1,23 @@
+# Use official Node image
+FROM node:18-alpine
+
+# Create app directory inside container
+WORKDIR /app
+
+# Copy package files first (better for caching)
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --production
+
+# Copy the rest of the project
+COPY . .
+
+# Expose the port your backend runs on
+EXPOSE 3000
+
+# Run as non-root user for security
+USER node
+
+# Start the application
+CMD ["npm", "start"]
