@@ -47,8 +47,12 @@ function Users() {
       return;
     }
 
-    const data = await loginUser(email, password);
-    login(data.user);
+    try {
+      const data = await loginUser(email, password);
+      login(data.user);
+    } catch (err) {
+      setError(err || "Login failed.");
+    }
   };
 
   const handleRegister = async (e) => {

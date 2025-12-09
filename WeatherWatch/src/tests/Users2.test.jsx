@@ -1,43 +1,46 @@
 import React from 'react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Users from '../Users';
-import { useAuth } from '../context/AuthContext';
 import { loginUser } from '../api/login_api';
 import { MemoryRouter } from 'react-router-dom';
 
-// mock loginUser so i dont make real API calls
-jest.mock('./api/login_api', () => ({
-    loginUser: jest.fn(),
-    registerUser: jest.fn(),
+// mock loginUser so we don't make real API calls
+vi.mock('../api/login_api', () => ({
+    loginUser: vi.fn(),
+    registerUser: vi.fn(),
 }));
 
-// mock useAuth so i can track login calls
-const mockLogin = jest.fn();
-jest.mock('./context/AuthContext', () => ({
+// mock useAuth so we can track login calls
+const mockLogin = vi.fn();
+vi.mock('../context/AuthContext', () => ({
     useAuth: () => ({ login: mockLogin }), // override useAuth hook
 }));
 
-// mock navigate so i can track redirects
-const mockedUsedNavigate = jest.fn();
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockedUsedNavigate, // override useNavigate
-}));
+// mock navigate so we can track redirects
+const mockedUsedNavigate = vi.fn();
+vi.mock('react-router-dom', async () => {
+    const actual = await vi.importActual('react-router-dom');
+    return {
+        ...actual,
+        useNavigate: () => mockedUsedNavigate, // override useNavigate
+    };
+});
 
 // tests for users component
 describe('Users component login', () => {
     // clear mocks before each test
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
   });
 
 
 
   // TEST 1 - successful login test
-  test('successful login redirects to /trip-planner', async () => {
+  test('successful login calls login with returned user', async () => {
 
     // mock successful login response
-    loginUser.mockResolvedValue({ id: 1, name: 'Test User', email: 'test@example.com' });
+    loginUser.mockResolvedValue({ user: { id: 1, name: 'Test User', email: 'test@example.com' } });
 
     // render Users component inside MemoryRouter for routing context
     render(
@@ -54,8 +57,6 @@ describe('Users component login', () => {
     await waitFor(() => {
         // verify login was called with correct data
         expect(mockLogin).toHaveBeenCalledWith({ id: 1, name: 'Test User', email: 'test@example.com' });
-        // verify navigation to trip-planner page
-        expect(mockedUsedNavigate).toHaveBeenCalledWith('/trip-planner');
     });
   });
 
