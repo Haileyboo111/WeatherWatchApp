@@ -330,4 +330,3 @@ function TripPlanner() {
 } 
 
 export default TripPlanner;
-
