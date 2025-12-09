@@ -304,25 +304,30 @@ function TripPlanner() {
           tripDates.map((date, i) => {
             const info = weatherData[i];
             if (!info) return null;
+
             return (
               <div key={i} className="card weather-card" style={{ marginTop: 16 }}>
                 <h3>Weather for {info.date}</h3>
+
                 {selectedPlace && (
-                  <p className="muted" style={{ marginTop: 4 }}>
-                    Destination: {selectedPlace.name}
-                  </p>
-                  <p>Precipitation: {info.precipitation} mm</p>
-                  <p>Cloud cover: {info.cloudCover}%</p>
-                  <p>Wind: {info.wind.speed} m/s {info.wind.direction}</p>
-                  <p>Humidity: {info.humidity}%</p>
-                </div>
-              );
-            })}
-        </div>
-      </div>
-    </section>
-  );
-}
+                  <>
+                    <p className="muted" style={{ marginTop: 4 }}>
+                      Destination: {selectedPlace.name}
+                    </p>
+                    <p>Precipitation: {info.precipitation} mm</p>
+                    <p>Cloud cover: {info.cloudCover}%</p>
+                    <p>Wind: {info.wind.speed} m/s {info.wind.direction}</p>
+                    <p>Humidity: {info.humidity}%</p>
+                  </>
+                )}
+              </div>
+            );
+          })}
+      </div> 
+      </div> 
+      </section> 
+        );
+} 
 
 export default TripPlanner;
 

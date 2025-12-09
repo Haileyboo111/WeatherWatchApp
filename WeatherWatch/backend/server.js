@@ -13,11 +13,12 @@ const app = express();
 
 // CORS configuration to allow requests from local dev ports
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 
 // middleware to parse JSON bodies and log requests
 app.use(express.json());
