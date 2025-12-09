@@ -4,7 +4,10 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { getForecast, getWeatherOverview } = require('./open_weather_api');
+const { getForecast, getWeatherOverview, getWeatherAlerts } = require('./open_weather_api');
+//const { Configuration, OpenAIApi } = require('openai');
+const OpenAIImport = require("openai");
+const OpenAI = OpenAIImport.default || OpenAIImport;
 const usersRouter = require('./routes/users'); // import user routes
 
 const app = express();
@@ -58,6 +61,59 @@ app.get('/api/overview', async (req, res) => {
   }
 });
 
+const createOpenAIClient = () => new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
+
+const openai = process.env.NODE_ENV === 'test' && global.__mockOpenAI
+  ? global.__mockOpenAI
+  : createOpenAIClient();
+
+app.post('/api/weather-summary', async (req, res) => {
+  const { weatherData } = req.body;
+  if (!weatherData) return res.status(400).json({ error: "weatherData is required" });
+
+  const prompt = `Generate a friendly 2-3 sentence weather summary for this data: ${JSON.stringify(weatherData)}`;
+
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-5-nano",
+      input: prompt,
+      store: true,
+    });
+    const summary = response.output_text || "No summary generated.";
+    res.json({ summary });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to generate summary" });
+  }
+});
+
+app.get('/api/alerts', async (req, res) => {
+  const { lat, lon, startDate, endDate } = req.query;
+
+  if (!lat || !lon || !startDate || !endDate) {
+    return res.status(400).json({ error: "lat, lon, startDate, endDate required" });
+  }
+
+  try {
+    const alerts = await getWeatherAlerts(lat, lon);
+    const start = new Date(startDate).getTime()/1000;
+    const end = new Date(endDate).getTime()/1000;
+    const filtered = alerts.filter(a => a.end >= start && a.start <= end);
+
+    res.json({ alerts: filtered });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Could not fetch alerts" });
+  }
+});
+
 // start server 
 const PORT = 5001;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+}
+
+module.exports = app;
